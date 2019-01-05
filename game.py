@@ -33,8 +33,9 @@ clock = pygame.time.Clock()
 
 
 def start():
-    board.create_board(30, 15)
+    board.create_board(15, 15)
     pygame.time.set_timer(pygame.USEREVENT, 1000)
+
 
 def update():
     global counter
@@ -81,6 +82,7 @@ def update():
         screen.blit(arial.render(counter_text, False, Color.White), (5, 10))
         
         pygame.display.flip()
+
 
 if __name__ == "__main__":
     start()

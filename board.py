@@ -1,5 +1,7 @@
 from field import Field
 import random
+import sys
+
 
 class Board:
     fields = [[]]
@@ -26,7 +28,7 @@ class Board:
 
                 f.set_image(self.assets.get_image("field"))
 
-                if random.randint(0, 9) > 6:
+                if random.randint(0, 9) > 8:
                     f.is_mine = True
 
                 self.fields[x][y] = f
@@ -59,8 +61,12 @@ class Board:
 
             # show field
             else:
-                f.show = True
                 self.get_mines_count(x, y)
+
+                if f.mines_around == 0:
+                    self.uncover_empty_fields(x, y)
+                else:
+                    f.show = True
 
                 f.set_image(self.assets.get_image("uField"))
 
@@ -85,7 +91,6 @@ class Board:
         elif mouse_btn == 2:
             pass
 
-            
     def get_fields_around(self, x, y):
         fields = []
 
@@ -114,6 +119,31 @@ class Board:
             if field.is_mine:
                 f.mines_around += 1
 
+    def uncover_empty_fields(self, x, y):
+        self.get_mines_count(x, y)
+        f = self.fields[x][y]
+
+        if not f.show and not f.is_flagged:
+            f.show = True
+            f.set_image(self.assets.get_image("uField"))
+
+            if f.mines_around == 0:
+
+                if x > 0:
+                    self.uncover_empty_fields(x - 1, y)
+
+                if x < len(self.fields[y]) - 1:
+                    self.uncover_empty_fields(x + 1, y)
+
+                if y > 0:
+                    self.uncover_empty_fields(x, y - 1)
+
+                if y < len(self.fields) - 1:
+                    self.uncover_empty_fields(x, y + 1)
+
+            else:
+                f.set_text(f.mines_around)
+
     def kermit_suicide(self):
         self.show_all()
 
@@ -132,7 +162,6 @@ class Board:
                     if f.mines_around != 0:
                         f.set_text(f.mines_around)
 
-    
     def world_to_cell(self, x, y):
         return (int(x / self.fields[0][0].width),
                 int(y / self.fields[0][0].height))

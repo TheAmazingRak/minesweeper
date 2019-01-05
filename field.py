@@ -17,7 +17,6 @@ class Field:
     text = None
     text_rect = None
 
-
     def __init__(self, scr):
         self.screen = scr
 
@@ -41,7 +40,6 @@ class Field:
             c = Color.Brown
 
         self.text = self.font.render(str(mines_around), False, c)
-        
 
     def draw(self, x, y):
         self.rect.x = x
